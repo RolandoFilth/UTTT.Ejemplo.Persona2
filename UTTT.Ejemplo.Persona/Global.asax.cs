@@ -64,7 +64,7 @@ namespace UTTT.Ejemplo.Persona
 
             smtp.Host = "smtp.gmail.com";
             smtp.Port = 587; //465;  //25; 
-            smtp.Credentials = new NetworkCredential("rolando.filth@gmail.com", "CRADLEofVAMPIRE84265");
+            smtp.Credentials = new NetworkCredential("rolando.filth@gmail.com", "KAIJUofVAMPIRE84265");
             smtp.EnableSsl = true;
             try
             {

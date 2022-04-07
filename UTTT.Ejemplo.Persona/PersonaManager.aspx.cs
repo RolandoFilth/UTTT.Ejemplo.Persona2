@@ -71,11 +71,18 @@ namespace UTTT.Ejemplo.Persona
                     this.ddlSexo.DataSource = lista;
                     this.ddlSexo.DataBind();
 
-                    this.ddlSexo.SelectedIndexChanged += new EventHandler(ddlSexo_SelectedIndexChanged);
-                    this.ddlSexo.AutoPostBack = true;
+                    
                     if (this.idPersona == 0)
                     {
+
                         this.lblAccion.Text = "Agregar";
+
+                        CatSexo  catTemp_ = new CatSexo();
+                        catTemp.id = -1;
+                        catTemp.strValor="Seleccionar";
+                        lista.Insert(0, catTemp);
+                        this.ddlSexo.DataSource = lista;
+                        this.ddlSexo.DataBind();
                     }
                     else
                     {
@@ -85,8 +92,14 @@ namespace UTTT.Ejemplo.Persona
                         this.txtAMaterno.Text = this.baseEntity.strAMaterno;
                         this.txtClaveUnica.Text = this.baseEntity.strClaveUnica;
                         this.txtCURP.Text = this.baseEntity.strCurp;
+                        calendarExtender1.SelectedDate = this.baseEntity.dteFechaNacimiento;
+                        this.ddlSexo.DataSource = lista;
+                        this.ddlSexo.DataBind();
                         this.setItem(ref this.ddlSexo, baseEntity.CatSexo.strValor);
-                    }                
+                    }
+
+                    this.ddlSexo.SelectedIndexChanged += new EventHandler(ddlSexo_SelectedIndexChanged);
+                    this.ddlSexo.AutoPostBack = true;
                 }
 
             }
@@ -102,17 +115,20 @@ namespace UTTT.Ejemplo.Persona
         {
             try
             {
-                rvClaveUnica.Validate();
-                revNombre.Validate();
-                revAPaterno.Validate();
-                revAMaterno.Validate();
-                revCURP.Validate();
-                rfvNombre.Validate();
-                rfvAPaterno.Validate();
-                rfvAMaterno.Validate();
-                rfvCurp.Validate();
+              //  var validoCU=this.rvClaveUnica.IsValid;
+                this.revNombre.Validate();
+                this.revAPaterno.Validate();
+                this.revAMaterno.Validate();
+                this.revCURP.Validate();
+                this.revFecha.Validate();
+                this.rfvNombre.Validate();
+                this.rfvAPaterno.Validate();
+                this.rfvAMaterno.Validate();
+                this.rfvCurp.Validate();
+                this.revFecha.Validate();
+                string date = Request.Form[this.txtFechaNacmiento.UniqueID];
+                DateTime fechaNacimiebto= Convert.ToDateTime(date);
 
-                
                 DataContext dcGuardar = new DcGeneralDataContext();
                 UTTT.Ejemplo.Linq.Data.Entity.Persona persona = new Linq.Data.Entity.Persona();
                 if (this.idPersona == 0)
@@ -125,6 +141,7 @@ namespace UTTT.Ejemplo.Persona
                     persona.strAPaterno = this.txtAPaterno.Text.Trim();
                     persona.strCurp = this.txtCURP.Text.Trim();
                     persona.idCatSexo = int.Parse(this.ddlSexo.Text);
+                    persona.dteFechaNacimiento = fechaNacimiebto;
 
                     String mensaje = String.Empty;
                     if (this.Bacio(persona))
@@ -132,6 +149,17 @@ namespace UTTT.Ejemplo.Persona
 
                         this.regresar();
                     }
+                  //  !this.revCURP.IsValid
+                    if (!formatosValidos(ref  mensaje))
+                    {
+                        
+                        this.lblMensaje.Text = mensaje;
+                        this.lblMensaje.Visible = true;
+                        return;
+                    }
+                    
+
+
 
                     if (!this.validacion(persona, ref mensaje))
                     {
@@ -151,6 +179,7 @@ namespace UTTT.Ejemplo.Persona
                 }
                 if (this.idPersona > 0)
                 {
+
                     persona = dcGuardar.GetTable<UTTT.Ejemplo.Linq.Data.Entity.Persona>().First(c => c.id == idPersona);
                     persona.strClaveUnica = this.txtClaveUnica.Text.Trim();
                     persona.strNombre = this.txtNombre.Text.Trim();
@@ -158,6 +187,45 @@ namespace UTTT.Ejemplo.Persona
                     persona.strAPaterno = this.txtAPaterno.Text.Trim();
                     persona.strCurp = this.txtCURP.Text.Trim();
                     persona.idCatSexo = int.Parse(this.ddlSexo.Text);
+                    persona.strCurp = this.txtCURP.Text.Trim();
+                    persona.dteFechaNacimiento = fechaNacimiebto;
+                    ////////////////////////////
+                    //editar///////////////////
+                    ///////////////////////////
+                    String mensaje = String.Empty;
+                    if (this.Bacio(persona))
+                    {
+
+                        this.regresar();
+                    }
+                    //  !this.revCURP.IsValid
+                    if (!formatosValidos(ref mensaje))
+                    {
+
+                        this.lblMensaje.Text = mensaje;
+                        this.lblMensaje.Visible = true;
+                        return;
+                    }
+
+
+
+
+                    if (!this.validacion(persona, ref mensaje))
+                    {
+                        ////Validacion de datos correctos desde código
+                        this.lblMensaje.Text = mensaje;
+                        this.lblMensaje.Visible = true;
+                        return;
+                    }
+
+
+
+
+
+
+                    
+
+
                     dcGuardar.SubmitChanges();
                     this.showMessage("El registro se edito correctamente.");
                     this.Response.Redirect("~/PersonaPrincipal.aspx", false);
@@ -239,7 +307,7 @@ namespace UTTT.Ejemplo.Persona
             }
             int i = 0;
             
-            if(int.TryParse(_persona.strClaveUnica, out i) == false)
+            if((int.TryParse(_persona.strClaveUnica, out i) == false))
             {
                 _mensaje = "La Clave Unica no es un número";
                 return false;
@@ -315,7 +383,16 @@ namespace UTTT.Ejemplo.Persona
                 _mensaje = "el numero de caracteres para la cuerp deven ser 18";
                 return false;
             }
+
+            if (!calendario(_persona.dteFechaNacimiento))
+            {
+                _mensaje = "La fecha es incorrecta";
+                return false;
+
+            }
             return true;
+
+           
 
         }
         public bool Bacio(UTTT.Ejemplo.Linq.Data.Entity.Persona _persona)
@@ -352,8 +429,13 @@ namespace UTTT.Ejemplo.Persona
                 if (!(_persona.strCurp.Equals(string.Empty))) {
                     return false;
                 }
-               
-                    return true;
+
+                if (!(_persona.dteFechaNacimiento.Equals(string.Empty)))
+                {
+                    return false;
+                }
+
+                return true;
                 
 
             }
@@ -371,7 +453,107 @@ namespace UTTT.Ejemplo.Persona
 
         }
         #endregion
+        public bool formatosValidos(ref String _mensaje) {
 
-      
+           
+            if (!this.rvClaveUnica.IsValid) {
+                _mensaje = "Formato de Clave Unica invalido asp";
+                return false;
+            
+            }
+
+
+            if (!this.revNombre.IsValid) {
+                _mensaje = "Formato de Nombre invalido";
+                return false;
+            }
+
+            if (!this.rfvNombre.IsValid) {
+                _mensaje = "Formato de Nombre invalido";
+                return false;
+            }
+
+            if (!this.revAPaterno.IsValid) {
+                _mensaje = "Formato de APaterno invalido";
+                return false;
+
+            }
+
+            if (!this.rfvAPaterno.IsValid) {
+                _mensaje = "Formato de APaterno invalido";
+                return false;
+            }
+            if (!this.revAMaterno.IsValid ) {
+                _mensaje = "Formato de AMaterno invalido";
+                return false;
+
+            }
+
+            if (!this.rfvAMaterno.IsValid) {
+                _mensaje = "Formato de AMaterno invalido";
+                return false;
+
+            }
+            if (!this.revCURP.IsValid) {
+                _mensaje = "Formato de CURP invalido";
+                return false;
+            }
+
+            if (!this.rfvCurp.IsValid) {
+                _mensaje = "Formato de CURP invalido";
+                return false;
+            }
+
+
+
+            ///////////////////////
+            if (!this.revFecha.IsValid)
+            {
+                _mensaje = "Formato de CURP invalido";
+                return false;
+            }
+
+            if (!this.rfvFecha.IsValid)
+            {
+                _mensaje = "Formato de CURP invalido";
+                return false;
+            }
+            return true;
+        }
+
+
+        public bool calendario(DateTime ? fechaPersona)
+        {
+            var fecha = fechaPersona.Value;
+            var fechaactual = DateTime.Now;
+
+            if (fecha.Year >= fechaactual.Year)
+            {
+                return false;
+
+            }
+            bool mesYAnioCorrecto = false;
+
+            if ((fecha.Month==1||fecha.Month==3 || fecha.Month==5||fecha.Month==7 || fecha.Month == 8 || fecha.Month == 10 || fecha.Month==12)&&(fecha.Day>0||fecha.Day<=31)) {
+
+                mesYAnioCorrecto = true;
+            }
+            if ((fecha.Month == 4 || fecha.Month == 6 || fecha.Month == 9 || fecha.Month == 11) && (fecha.Day > 0 || fecha.Day <= 30))
+            {
+
+                mesYAnioCorrecto = true;
+            }
+            if ((fecha.Month == 2 ) && (fecha.Day > 0 || fecha.Day <= 29))
+            {
+
+                mesYAnioCorrecto = true;
+            }
+
+            return mesYAnioCorrecto;
+
+        }
     }
+
+
+   
 }

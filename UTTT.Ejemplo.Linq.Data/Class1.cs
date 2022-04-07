@@ -7,5 +7,16 @@ namespace UTTT.Ejemplo.Linq.Data
 {
     public class Class1
     {
+
+        public  string cambiarCadenaConeccion() {
+
+
+
+
+            return "sdfs";
+        
+        
+        }
+
     }
 }

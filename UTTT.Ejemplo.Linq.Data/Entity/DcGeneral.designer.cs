@@ -45,10 +45,11 @@ namespace UTTT.Ejemplo.Linq.Data.Entity
     #endregion
 		
 		public DcGeneralDataContext() : 
-				base(global::UTTT.Ejemplo.Linq.Data.Properties.Settings.Default.PersonaConnectionString, mappingSource)
+				base(global::UTTT.Ejemplo.Linq.Data.Properties.Settings.Default.PersonaConnectionString , mappingSource)
 		{
 			OnCreated();
 		}
+
 		
 		public DcGeneralDataContext(string connection) : 
 				base(connection, mappingSource)

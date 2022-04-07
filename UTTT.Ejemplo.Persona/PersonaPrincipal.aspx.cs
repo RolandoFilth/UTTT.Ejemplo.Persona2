@@ -137,6 +137,23 @@ namespace UTTT.Ejemplo.Persona
             }
         }
 
+
+        protected void onTxtNombreTextChange(object sender, EventArgs e)
+        {
+            try {
+
+                this.DataSourcePersona.RaiseViewChanged();
+
+            }
+            catch (Exception _e) {
+            
+            
+            }
+
+
+
+        
+        }
         #endregion 
 
         #region Metodos
@@ -197,5 +214,10 @@ namespace UTTT.Ejemplo.Persona
         }
 
         #endregion
+
+        protected void dgvPersonas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

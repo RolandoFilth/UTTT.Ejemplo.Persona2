@@ -30,9 +30,10 @@ namespace UTTT.Ejemplo.Linq.Data.Properties
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("data source =  DESKTOP-F5M8TGN;\ndatabase = Persona;\nIntegrated Security = SSP" +
-            "I;\npersist security info=True;")]
 
+        [global::System.Configuration.DefaultSettingValueAttribute("data source=Personas.mssql.somee.com;persist security info=False;initial catalog=Personas;User Id=ChicoKaiju_SQLLogin_1;Password=y3np43drp8;")]
+          //[global::System.Configuration.DefaultSettingValueAttribute("data source =  DESKTOP-F5M8TGN;\ndatabase = Persona;\nIntegrated Security = SSP" +
+       //     "I;\npersist security info=True;")]
         public string PersonaConnectionString
         {
             get
@@ -40,6 +41,11 @@ namespace UTTT.Ejemplo.Linq.Data.Properties
                 return ((string)(this["PersonaConnectionString"]));
             }
         }
+
+      
+
+
+      
     }
 }
     
